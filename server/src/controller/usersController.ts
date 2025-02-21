@@ -3,7 +3,7 @@ import { UserService } from "../service/userService";
 
 const userService = new UserService();
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req: Request, res: Response): Promise<any> => {
   try {
     const users = await userService.getAllUsers();
     res.status(200).json({ users });

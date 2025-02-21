@@ -5,18 +5,29 @@ import {
   RiUserLine,
   RiLogoutBoxRLine,
   RiMenuLine,
+  RiTeamLine,
+  RiFolderLine,
+  RiFolderOpenLine,
 } from "react-icons/ri";
 import { useUser } from "../context/UserContext";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { projectApi } from "../services/project/api";
+import toast from "react-hot-toast";
+import { projectUserApi } from "../services/project-users/api";
 
-
+interface Project {
+  project_id: number;
+  project_name: string;
+}
 
 export default function Sidebar() {
   const { user, logout } = useUser();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,6 +37,11 @@ export default function Sidebar() {
       path: "/dashboard",
       label: "Dashboard",
       icon: <RiDashboardLine size={20} />,
+    },
+    {
+      path: "/teams",
+      label: "Teams",
+      icon: <RiTeamLine size={20} />,
     },
     {
       path: "/settings",
@@ -40,7 +56,7 @@ export default function Sidebar() {
       setIsMobile(mobile);
       if (!mobile) {
         setIsSidebarOpen(true);
-      }
+      } 
     };
 
     window.addEventListener('resize', handleResize);
@@ -50,106 +66,153 @@ export default function Sidebar() {
   }, []);
 
   useEffect(() => {
-    if (isMobile) {
-      setIsSidebarOpen(false);
+    if (user?.id) {
+      fetchUserProjects();
     }
-  }, [location, isMobile]);
+  }, [user]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const fetchUserProjects = async () => {
+    try {
+      if (!user?.id) throw new Error('User not found');
+      const userProjects = await projectUserApi.getUserProjects(user!.id);
+      console.log("userProjects", userProjects)
+      setProjects(userProjects);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to fetch projects');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-    setShowDropdown(false);
+  const handleProjectClick = (projectId: number) => {
+    navigate(`/projects/${projectId}`);
   };
 
   return (
     <>
-      <button
-        onClick={toggleSidebar}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-md hover:bg-gray-100"
-      >
-        <RiMenuLine size={24} />
-      </button>
-
-      {isMobile && isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 bg-opacity-50 z-40"
-          onClick={toggleSidebar}
-        />
+      {isMobile && (
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-100 hover:bg-gray-200"
+        >
+          <RiMenuLine size={24} />
+        </button>
       )}
 
       <div
-        className={`fixed md:static h-screen bg-white z-40 ${
-          isSidebarOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full md:w-16 md:translate-x-0"
+        className={`h-full w-64 bg-white shadow-lg ${
+          isMobile ? `fixed inset-y-0 left-0 transform transition-transform duration-300 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } z-40` : ""
         }`}
       >
-        <div className="h-full p-4 flex flex-col justify-between overflow-hidden">
-          <div>
-            <div className="mb-8">
-              <h1 className={`text-2xl font-bold text-gray-800 whitespace-nowrap ${
-                !isSidebarOpen && "md:hidden"
-              }`}>
-                Task Manager
-              </h1>
-            </div>
-            <nav>
-              <ul className="space-y-2">
-                {menuItems.map((item, index) => (
-                  <li key={index}>
-                    <a
-                      href={item.path}
-                      className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 ${
-                        !isSidebarOpen && "md:justify-center"
-                      }`}
-                    >
-                      {item.icon}
-                      <span className={`ml-2 whitespace-nowrap ${
-                        !isSidebarOpen && "md:hidden"
-                      }`}>
-                        {item.label}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+        <div className="flex flex-col h-full">
+          <div className="p-4">
+            <h2 className="text-xl font-bold text-gray-800">Task Manager</h2>
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setShowDropdown(!showDropdown)}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 ${
-                !isSidebarOpen && "md:justify-center"
-              }`}
-            >
-              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                <RiUserLine size={20} className="text-indigo-600" />
-              </div>
-              <div className={`flex-1 text-left whitespace-nowrap ${
-                !isSidebarOpen && "md:hidden"
-              }`}>
-                <p className="font-medium text-gray-900">{user?.fname}</p>
-                <p className="text-sm text-gray-500 truncate">{user?.email}</p>
-              </div>
-            </button>
-
-            {showDropdown && (
-              <div className={`absolute ${isSidebarOpen ? 'bottom-full left-0 w-full' : 'bottom-0 left-full ml-2'} mb-2 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-[200px]`}>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors duration-200"
+          <nav className="flex-1 overflow-y-auto">
+            <ul className="space-y-1 p-2">
+              {menuItems.map((item) => (
+                <li key={item.path}>
+                  <a
+                    href={item.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(item.path);
+                    }}
+                    className={`flex items-center space-x-2 px-4 py-2.5 rounded-md transition-colors ${
+                      location.pathname === item.path
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
-                  <RiLogoutBoxRLine size={18} />
-                  <span>Logout</span>
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </a>
+              </li>
+              ))}
+
+              <li className="pt-4">
+                <button
+                  className="flex items-center justify-between w-full px-4 py-2.5 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RiFolderLine size={20} />
+                    <span>Projects</span>
+                  </div>
                 </button>
-              </div>
-            )}
+
+                  <ul className="ml-4 mt-1 space-y-1">
+                    {loading ? (
+                      <li className="px-4 py-2 text-sm text-gray-500">Loading...</li>
+                    ) : projects.length === 0 ? (
+                      <li className="px-4 py-2 text-sm text-gray-500">No projects found</li>
+                    ) : (
+                      projects.map((project) => (
+                        <li key={project.project_id}>
+                          <button
+                            onClick={() => handleProjectClick(project.project_id)}
+                            className={`flex items-center space-x-2 w-full px-4 py-2 text-left text-sm rounded-md transition-colors ${
+                              location.pathname === `/projects/${project.project_id}`
+                                ? "bg-indigo-50 text-indigo-600"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            <RiFolderOpenLine size={16} />
+                            <span className="text-black">{project.project_name}</span>
+                          </button>
+                        </li>
+                      ))
+                    )}
+                    <li>
+                      <button
+                        onClick={() => navigate('/new-project')}
+                        className="flex items-center space-x-2 w-full px-4 py-2 text-left text-sm text-indigo-600 hover:bg-gray-100 rounded-md transition-colors"
+                      >
+                        <span>+ New Project</span>
+                      </button>
+                    </li>
+                  </ul>
+              </li>
+            </ul>
+          </nav>
+
+          <div className="p-4 border-t">
+            <div className="relative">
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center space-x-2 w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <RiUserLine size={20} />
+                <span className="flex-1 truncate">{user?.fname || "User"}</span>
+              </button>
+
+              {showDropdown && (
+                <div className="absolute bottom-full left-0 w-full mb-2 bg-white rounded-md shadow-lg border">
+              <button
+                    onClick={() => {
+                      logout();
+                      navigate("/login");
+                    }}
+                    className="flex items-center space-x-2 w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                    <RiLogoutBoxRLine size={20} />
+                <span>Logout</span>
+              </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {isSidebarOpen && isMobile && (
+        <div
+          className="fixed inset-0 bg-black/50 bg-opacity-50 z-30"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
     </>
   );
 }

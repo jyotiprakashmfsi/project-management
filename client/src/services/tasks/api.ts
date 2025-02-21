@@ -1,36 +1,9 @@
 // import.meta.env.VITE_API_BASE_URL
 
+import { PaginatedTaskResponse, Task, TaskCreateData } from '../../types/task';
 import { getHeaders } from '../../utils/header';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL
-
-export interface Task {
-    id: number;
-    title: string;
-    description: string;
-    status: string;
-    end_time: string;
-    project_id: number;
-    assigned_to: number;
-    task_json?: any;
-    priority?: string;
-}
-
-export interface TaskCreateData {
-    title: string;
-    description: string;
-    status: string;
-    end_time: string;
-    project_id: number;
-    assigned_to: number;
-    task_json?: any;
-    priority?: string;
-}
-
-export interface PaginatedTaskResponse {
-    tasks: Task[];
-    total: number;
-}
 
 export const taskApi = {
     getAllTasks: async (page: number = 1, limit: number = 10): Promise<PaginatedTaskResponse> => {

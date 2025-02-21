@@ -5,7 +5,8 @@ import {
     getUserProjects,
     updateProjectUserRole,
     removeUserFromProject,
-    isUserInProject
+    isUserInProject,
+    getAllTeamMembers
 } from "../controller/projectUserController";
 import { authMiddleware } from "../middleware/authMiddleware";
 
@@ -243,5 +244,50 @@ projectUserRoute.delete("/project/:projectId/user/:userId", authMiddleware, remo
  *         description: Server Error
  */
 projectUserRoute.get("/project/:projectId/user/:userId/check", authMiddleware, isUserInProject);
+
+/**
+ * @swagger
+ * /v1/api/project-users/team-members/{userId}:
+ *  get:
+ *     tags:
+ *     - Project User Controller
+ *     summary: Get all team members from all projects a user is part of
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the user
+ *     responses:
+ *       200:
+ *         description: List of team members
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   user_id:
+ *                     type: integer
+ *                   project_id:
+ *                     type: integer
+ *                   role:
+ *                     type: string
+ *                   fname:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   project_name:
+ *                     type: string
+ *       400:
+ *         description: Invalid user ID
+ *       500:
+ *         description: Server Error
+ */
+projectUserRoute.get("/team-members/:userId", getAllTeamMembers);
 
 export default projectUserRoute;

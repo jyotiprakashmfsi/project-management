@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { authService } from "../../services/auth/api";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router";
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 export function Login() {
   const { setUser, setToken } = useUser();
@@ -10,6 +12,8 @@ export function Login() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,14 +21,16 @@ export function Login() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       const response = await authService.login(formData);
-      console.log("login response:", response);
 
       if (response.token && response.user) {
         setToken(response.token);
@@ -32,6 +38,7 @@ export function Login() {
         console.log("token", response.token);
         console.log("user", response.user);
         console.log("Login successful");
+        toast.success('Login successful!');
         navigate("/dashboard");
       } else {
         setError("Invalid email or password");
@@ -43,27 +50,44 @@ export function Login() {
       } else {
         setError("An error occurred during login. Please try again.");
       }
+      toast.error(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between"></div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full flex justify-start px-8 absolute top-4">
+        <a 
+          href="/"
+          className="text-indigo-600 hover:text-indigo-500 font-medium text-sm"
+        >
+          /Home
+        </a>
+      </div>
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to your account
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Welcome back to your project management dashboard
+          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="rounded-md p-4">
-              <div className="text-sm text-red-700">{error}</div>
+            <div className="rounded-md bg-red-50 p-4">
+              <div className="flex">
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                </div>
+              </div>
             </div>
           )}
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <input
@@ -71,44 +95,57 @@ export function Login() {
                 name="email"
                 type="email"
                 required
-                className="rounded-none relative w-full px-3 py-2 border border-gray-300  text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-sm"
-                placeholder="Email address"
+                className="mt-1 appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <div className="mt-1 relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <FiEyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <FiEye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-          <div className="flex gap-2">
-            <p className="text-black text-sm">Don't have account?</p>
-            <a
-              href="/signup"
-              className="text-indigo-500 hover:underline text-sm"
-            >
-              Signup
-            </a>
+
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Don't have an account? Sign up
+              </a>
+            </div>
           </div>
 
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>

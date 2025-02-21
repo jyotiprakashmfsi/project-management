@@ -191,7 +191,8 @@ const Tasks = sequelize.define(
   },
 )
 
-sequelize.sync({alter: true});
+// sequelize.sync({alter: true});
+sequelize.sync();
 console.log('All models were synchronized successfully.');
 
 sequelize

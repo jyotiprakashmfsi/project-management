@@ -1,21 +1,8 @@
+import { ProjectUserCreateData } from '../../types/project-user';
 import { getHeaders } from '../../utils/header';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL
 
-export interface ProjectUser {
-    id: number;
-    project_id: number;
-    user_id: number;
-    role: string;
-    fname?: string;
-    email?: string;
-}
-
-export interface ProjectUserCreateData {
-    project_id: number;
-    user_id: number;
-    role: string;
-}
 
 export const projectUserApi = {
     addUserToProject: async (data: ProjectUserCreateData) => {
@@ -24,7 +11,35 @@ export const projectUserApi = {
             headers: getHeaders(),
             body: JSON.stringify(data)
         });
-        if (!response.ok) throw new Error('Failed to add user to project');
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to add user to project');
+        }
+        return response.json();
+    },
+
+    updateProjectUserRole: async (projectId: number, userId: number, role: string) => {
+        const response = await fetch(`${API_URL}/project-users/project/${projectId}/user/${userId}`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify({ role })
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to update user role');
+        }
+        return response.json();
+    },
+
+    removeUserFromProject: async (projectId: number, userId: number) => {
+        const response = await fetch(`${API_URL}/project-users/project/${projectId}/user/${userId}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to remove user from project');
+        }
         return response.json();
     },
 
@@ -37,7 +52,8 @@ export const projectUserApi = {
         return response.json();
     },
 
-    getUserProjects: async (userId: number) => {
+    getUserProjects: async (userId: number ) => {
+        // console.log("request sending to ", `${API_URL}/project-users/user/${userId}, with headers ${getHeaders().Authorisation}`);
         const response = await fetch(`${API_URL}/project-users/user/${userId}`, {
             method: 'GET',
             headers: getHeaders()
@@ -56,21 +72,21 @@ export const projectUserApi = {
         return response.json();
     },
 
-    removeUserFromProject: async (projectId: number, userId: number) => {
-        const response = await fetch(`${API_URL}/project-users/project/${projectId}/user/${userId}`, {
-            method: 'DELETE',
-            headers: getHeaders()
-        });
-        if (!response.ok) throw new Error('Failed to remove user from project');
-        return response.json();
-    },
-
     checkUserInProject: async (projectId: number, userId: number) => {
         const response = await fetch(`${API_URL}/project-users/project/${projectId}/user/${userId}/check`, {
             method: 'GET',
             headers: getHeaders()
         });
         if (!response.ok) throw new Error('Failed to check user in project');
+        return response.json();
+    },
+
+    getTeamMembers: async (userId: number) => {
+        const response = await fetch(`${API_URL}/project-users/team-members/${userId}`, {
+            method: 'GET',
+            headers: getHeaders()
+        });
+        if (!response.ok) throw new Error('Failed to get team members');
         return response.json();
     }
 };

@@ -3,7 +3,7 @@ const api_url = import.meta.env.VITE_API_BASE_URL
 export class NotificationApi {
     static async approachingTasks(id: number, jwt: string) {
         try {
-            const response = await fetch(`${api_url}/api/notifications/approaching/${id}`, {
+            const response = await fetch(`${api_url}/notifications/approaching/${id}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export class NotificationApi {
 
     static async overdueTasks(id: number, jwt: string) {
         try {
-            const response = await fetch(`${api_url}/api/notifications/overdue/${id}`, {
+            const response = await fetch(`${api_url}/notifications/overdue/${id}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",

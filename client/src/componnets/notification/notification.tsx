@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NotificationApi } from "../../services/notification/api";
 import { useUser } from "../../context/UserContext";
-import { tasksService } from "../../services/tasks/api";
+import { taskApi } from "../../services/tasks/api";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
 import { Task } from "../../types/task";
@@ -59,7 +59,7 @@ const NotificationComponent: React.FC = () => {
     if (!selectedTask?.id || !token) return;
 
     try {
-      await tasksService.markDone(selectedTask.id, token);
+      // await tasksService.markDone(selectedTask.id, token);
       setShowModal(false);
       setSelectedTask(null);
       fetchNotifications();

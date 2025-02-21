@@ -24,7 +24,7 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "Task Scheduler",
+      title: "Task Scheduler",  
       version: "1.0.0",
       description: "Manage your tasks efficiently.",
     },

@@ -6,7 +6,9 @@ export class TaskRepository {
     async createTask(taskData: TaskCreateData): Promise<Task | null> {
         const mysqlEndTime = getLocalTimeString(new Date(taskData.end_time));
         const currentTime = getLocalTimeString(new Date());
-        
+
+        console.log("taskData", taskData);
+
         const [result] = await sequelize.query(
             `INSERT INTO tasks (project_id, title, description, status, end_time, assigned_to, task_json, priority, createdAt, updatedAt)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -25,7 +27,7 @@ export class TaskRepository {
                 ]
             }
         );
-        return this.getTaskById((result as any).insertId);
+        return this.getTaskById((result as any));
     }
 
     async getAllTasks(pagination: PaginationParams): Promise<{ tasks: Task[], total: number }> {
@@ -71,33 +73,49 @@ export class TaskRepository {
     }
 
     async updateTask(id: number, taskData: Partial<TaskCreateData>): Promise<Task | null> {
-        const currentTime = getLocalTimeString(new Date());
-        const updates: string[] = [];
-        const values: any[] = [];
+        try {
+            const currentTime = getLocalTimeString(new Date());
+            const updates: string[] = [];
+            const values: any[] = [];
 
-        Object.entries(taskData).forEach(([key, value]) => {
-            if (value !== undefined) {
-                if (key === 'end_time') {
-                    value = getLocalTimeString(new Date());
+            type UpdateableField = keyof TaskCreateData;
+            const allowedFields: UpdateableField[] = [
+                'project_id',
+                'title',
+                'description',
+                'status',
+                'assigned_to',
+                'task_json',
+                'priority'
+            ];
+
+            for (const key of allowedFields) {
+                if (key in taskData) {
+                    let value = taskData[key];
+                    // if (key === 'end_time') {
+                    //     value = getLocalTimeString(new Date(value));
+                    // }
+                    if (key === 'task_json') {
+                        value = JSON.stringify(value);
+                    }
+                    updates.push(`${key} = ?`);
+                    values.push(value);
                 }
-                if (key === 'task_json') {
-                    value = JSON.stringify(value);
-                }
-                updates.push(`${key} = ?`);
-                values.push(value);
             }
-        });
 
-        updates.push('updatedAt = ?');
-        values.push(currentTime);
-        values.push(id);
+            updates.push('updatedAt = ?');
+            values.push(currentTime);
 
-        await sequelize.query(
-            `UPDATE tasks SET ${updates.join(', ')} WHERE id = ?`,
-            { replacements: values }
-        );
+            values.push(id);
 
-        return this.getTaskById(id);
+            const query = `UPDATE tasks SET ${updates.join(', ')} WHERE id = ?`;
+            await sequelize.query(query, { replacements: values });
+
+            return this.getTaskById(id);
+        } catch (error) {
+            console.error('Error in updateTask:', error);
+            throw error;
+        }
     }
 
     async deleteTask(id: number): Promise<boolean> {

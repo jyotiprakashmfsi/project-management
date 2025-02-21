@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/authMiddleware";
-import { deleteUser, getUserById, update } from "../controller/usersController";
+import { deleteUser, getAllUsers, getUserById, update } from "../controller/usersController";
 
 const userRoutes= Router();
 
@@ -123,5 +123,32 @@ userRoutes.put("/:id", authMiddleware, update)
 */
 
 userRoutes.get("/:id", authMiddleware, getUserById)
+
+/**
+* @swagger
+* /v1/api/users:
+*  get:
+*     tags:
+*     - User Controller
+*     summary: Get all users
+*     parameters:
+*       - in: header
+*         name: Authorisation
+*         required: true
+*         schema:
+*           type: string
+*         description: JWT token
+*     responses:
+*      200:
+*        description: Successfully accessed protected route
+*      401:
+*        description: Unauthorized - No token provided or invalid token
+*      404: 
+*        description: User not found
+*      500:
+*        description: Internal server error
+*/
+
+userRoutes.get("/", authMiddleware, getAllUsers)
 
 export default userRoutes;

@@ -86,3 +86,18 @@ export const isUserInProject = async (req: Request, res: Response): Promise<any>
         res.status(500).json({ message: "Failed to check user project membership", error });
     }
 };
+
+export const getAllTeamMembers = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = parseInt(req.params.userId);
+        if (isNaN(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        const teamMembers = await projectUserService.getAllTeamMembers(userId);
+        res.json(teamMembers);
+    } catch (error) {
+        console.error("Error getting team members:", error);
+        res.status(500).json({ error: "Failed to get team members" });
+    }
+};

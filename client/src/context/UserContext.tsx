@@ -13,7 +13,7 @@ interface UserContextType {
   setUser: (user: User ) => void;
   setToken: (token: string ) => void;
   logout: () => void;
-}
+} 
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 

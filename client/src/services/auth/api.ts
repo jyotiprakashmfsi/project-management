@@ -10,7 +10,7 @@ interface User{
 export class authService {
   static async login(data: User) {
     try {
-      const response = await fetch(`${api_url}/api/auth/login`, {
+      const response = await fetch(`${api_url}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export class authService {
 
   static async signup(data: User) {
     try {
-      const response = await fetch(`${api_url}/api/auth/signup`, {
+      const response = await fetch(`${api_url}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

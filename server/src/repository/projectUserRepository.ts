@@ -19,7 +19,7 @@ export class ProjectUserRepository {
                 ]
             }
         );
-        return this.getProjectUserById((result as any).insertId);
+        return this.getProjectUserById((result as any));
     }
 
     async getProjectUserById(id: number): Promise<ProjectUser | null> {
@@ -102,5 +102,22 @@ export class ProjectUserRepository {
             }
         );
         return (result as any)[0].count > 0;
+    }
+
+    async getAllTeamMembers(userId: number): Promise<ProjectUser[]> {
+        const [teamMembers] = await sequelize.query(
+            `SELECT DISTINCT pu2.*, u.fname, u.email, p.name as project_name
+             FROM project_users pu1
+             JOIN projects p ON pu1.project_id = p.id
+             JOIN project_users pu2 ON pu1.project_id = pu2.project_id
+             JOIN users u ON pu2.user_id = u.id
+             WHERE pu1.user_id = ?
+             ORDER BY p.name, u.fname`,
+            {
+                replacements: [userId]
+            }
+        );
+        
+        return teamMembers as ProjectUser[];
     }
 }

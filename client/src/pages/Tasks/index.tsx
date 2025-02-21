@@ -1,11 +1,11 @@
-import TaskComponent from "../../componnets/tasks/task-component";
 import Sidebar from "../../componnets/sidebar";
-import NotificationComponent from "../../componnets/notification/notification";
+import TasksComponent from "../../componnets/tasks/tasks-component";
+import TaskDetails from "../../componnets/tasks/task-details";
 
 export default function TasksPage() {
   return (
     <div className="flex min-h-screen w-full bg-gray-50">
-      <div className="">
+      <div>
         <Sidebar />
       </div>
       <div className="flex-1 w-full">
@@ -16,9 +16,8 @@ export default function TasksPage() {
               <span>/</span>
               <span className="text-black">Tasks</span>
             </div>
-            <NotificationComponent />
           </div>
-          <TaskComponent />
+          <TaskDetails />
         </div>
       </div>
     </div>

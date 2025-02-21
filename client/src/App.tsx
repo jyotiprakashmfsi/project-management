@@ -7,27 +7,31 @@ import { UserProvider } from './context/UserContext';
 import ProtectedRoute from "./componnets/protected/protected-route";
 import TasksPage from "./pages/Tasks";
 import SettingsPage from "./pages/Settings";
-
+import { NewProject } from "./pages/NewProject";
+import TeamsPage from "./pages/Teams";
+import ProjectPage from "./pages/Project";
+import TaskDetails from "./componnets/tasks/task-details";
 
 function App() {
-
   return (
     <UserProvider>
-      <div className="flex ">
-
+      <div className="flex">
         <BrowserRouter>
-        <div className="w-screen">
-
-          <Routes>
-            <Route path="/" element={<HomeComponent />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<TasksPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-            </Route>
-          </Routes>
-        </div>
+          <div className="w-screen">
+            <Routes>
+              <Route path="/" element={<HomeComponent />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/new-project" element={<NewProject />} />
+                <Route path="/dashboard" element={<TasksPage />} />
+                <Route path="/teams" element={<TeamsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/projects/:projectId" element={<ProjectPage />} />
+                <Route path="/tasks/:taskId" element={<TasksPage />} />
+              </Route>
+            </Routes>
+          </div>
         </BrowserRouter>
       </div>
     </UserProvider>

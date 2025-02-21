@@ -31,4 +31,8 @@ export class ProjectUserService {
     async isUserInProject(projectId: number, userId: number): Promise<boolean> {
         return this.projectUserRepository.isUserInProject(projectId, userId);
     }
+
+    async getAllTeamMembers(userId: number): Promise<ProjectUser[]> {
+        return this.projectUserRepository.getAllTeamMembers(userId);
+    }
 }

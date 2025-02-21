@@ -68,6 +68,7 @@ export const getProjectTasksByStatus = async (req: Request, res: Response) => {
 export const updateTask = async (req: Request, res: Response): Promise<any> => {
     try {
         const taskId = parseInt(req.params.id);
+        // console.log("Request Body:", req.body)
         const updatedTask = await taskService.updateTask(taskId, req.body);
         
         if (!updatedTask) {

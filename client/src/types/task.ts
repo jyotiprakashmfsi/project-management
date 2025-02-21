@@ -1,15 +1,31 @@
 export interface Task {
-    id?: number;
-    task_name?: string;
+    id: number;
+    title: string;
     description: string;
     status: string;
     end_time: string;
-    start_time: string;
-    tags: string;
-    repeat_freq: number;
-    remind_time: number;
-    colour: string;
-    user_id: number;
-    createdAt?: string;
-    updatedAt?: string;
+    project_id: number;
+    assigned_to: number;
+    task_json?: {
+        messages: { posted_at: string; content?: string; posted_by: number; files?: any }[];
+    };
+    priority?: string;
+}
+
+export interface TaskCreateData {
+    title: string;
+    description: string;
+    status: string;
+    end_time: string;
+    project_id: number;
+    assigned_to: number;
+    task_json?: {
+        messages: { posted_at: string; content?: string; posted_by: number; files?: any }[];
+    };
+    priority?: string;
+}
+
+export interface PaginatedTaskResponse {
+    tasks: Task[];
+    total: number;
 }
