@@ -86,6 +86,7 @@ export default function TaskDetails() {
                     toast.success("Files uploaded successfully");
                 }
             }).open();
+            console.log("result", result)
         } catch (error) {
             console.error("Error uploading file:", error);
             toast.error("Failed to upload file");
@@ -154,13 +155,13 @@ export default function TaskDetails() {
     };
 
     if (loading) return <div className="flex items-center justify-center h-full">Loading...</div>;
-    if (!task) return <div className="flex items-center justify-center h-full">Task not found</div>;
+    if (!task) return <div className="flex items-center justify-center text-black h-full">Task not found</div>;
 
     return (
-        <div className="flex flex-col h-[calc(100vh-6rem)] bg-gray-50 text-black">
+        <div className="flex flex-col h-[calc(100vh-6rem)] bg-gray-50 -mb-4 text-black">
             <div className="bg-white p-6 shadow-sm">
                 <div className="flex justify-between sm:flex-row flex-col sm:items-center items-start mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900">{task.title}</h1>
+                    <h1 className="text-2xl font-bold text-black">{task.title}</h1>
                     {task.status !== 'completed' && (
                         <button
                             onClick={handleMarkAsComplete}

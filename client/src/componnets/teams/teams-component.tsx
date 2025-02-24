@@ -3,11 +3,9 @@ import { useUser } from '../../context/UserContext';
 import { projectUserApi } from '../../services/project-users/api';
 import { usersService } from '../../services/user/api';
 import toast from 'react-hot-toast';
-import Sidebar from '../../componnets/sidebar';
-import { RiUserAddLine, RiEditLine, RiDeleteBinLine } from 'react-icons/ri';
+import { RiUserAddLine } from 'react-icons/ri';
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import { BsThreeDots } from 'react-icons/bs';
 
 interface TeamMember {
     id: number;
@@ -175,7 +173,7 @@ export default function TeamsComponent() {
                 ) : (
                     <div className="space-y-8">
                         {Object.entries(groupedMembers).map(([projectId, { project_name, members }]) => (
-                            <div key={projectId} className=" rounded-lg">
+                            <div key={projectId} className="rounded-lg">
                                 <div className="flex justify-between items-center p-6 border-b">
                                     <h2 className="text-xl font-semibold text-gray-900">{project_name}</h2>
                                     <button

@@ -1,6 +1,5 @@
 import Sidebar from "../../componnets/sidebar";
 import SettingsComponent from "../../componnets/settings/settings-component";
-import NotificationComponent from "../../componnets/notification/notification";
 
 export default function SettingsPage() {
   return (
@@ -16,7 +15,6 @@ export default function SettingsPage() {
               <span>/</span>
               <span className="text-black">Settings</span>
             </div>
-            <NotificationComponent />
           </div>
           <SettingsComponent />
         </div>

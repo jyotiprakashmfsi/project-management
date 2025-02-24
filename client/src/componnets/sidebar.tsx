@@ -12,7 +12,6 @@ import {
 import { useUser } from "../context/UserContext";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { projectApi } from "../services/project/api";
 import toast from "react-hot-toast";
 import { projectUserApi } from "../services/project-users/api";
 
@@ -108,7 +107,7 @@ export default function Sidebar() {
       >
         <div className="flex flex-col h-full">
           <div className="p-4">
-            <h2 className="text-xl font-bold text-gray-800">Task Manager</h2>
+            <h2 className="text-xl font-bold text-black">Project Manager</h2>
           </div>
 
           <nav className="flex-1 overflow-y-auto">

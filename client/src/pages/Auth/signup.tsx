@@ -86,6 +86,8 @@ export function Signup() {
                 email: formData.email,
                 password: formData.password
             });
+            console.log("signupResponse", signupResponse)
+            toast.success('Account created successfully!');
 
             const loginResponse = await authService.login({
                 email: formData.email,
@@ -106,7 +108,7 @@ export function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
             <div className="w-full flex justify-start px-8 absolute top-4">
         <a 
           href="/"
@@ -117,10 +119,10 @@ export function Signup() {
       </div>
             <div className="max-w-md w-full space-y-8">
                 <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-black">
                         Create your account
                     </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
+                    <p className="mt-2 text-center text-sm text-black">
                         Get started with your project management journey
                     </p>
                 </div>
@@ -139,7 +141,7 @@ export function Signup() {
                     <div className="rounded-md space-y-4">
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="fname" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="fname" className="block text-sm font-medium text-black">
                                     First Name
                                 </label>
                                 <input
@@ -149,7 +151,7 @@ export function Signup() {
                                     required
                                     className={`mt-1 appearance-none rounded relative block w-full px-3 py-2 border ${
                                         validationErrors.fname ? 'border-red-300' : 'border-gray-300'
-                                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                                    } placeholder-gray-500 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                                     value={formData.fname}
                                     onChange={handleChange}
                                 />
@@ -159,7 +161,7 @@ export function Signup() {
                             </div>
 
                             <div>
-                                <label htmlFor="lname" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="lname" className="block text-sm font-medium text-black">
                                     Last Name
                                 </label>
                                 <input
@@ -169,7 +171,7 @@ export function Signup() {
                                     required
                                     className={`mt-1 appearance-none rounded relative block w-full px-3 py-2 border ${
                                         validationErrors.lname ? 'border-red-300' : 'border-gray-300'
-                                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                                    } placeholder-gray-500 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                                     value={formData.lname}
                                     onChange={handleChange}
                                 />
@@ -180,7 +182,7 @@ export function Signup() {
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="email" className="block text-sm font-medium text-black">
                                 Email address
                             </label>
                             <input
@@ -191,7 +193,7 @@ export function Signup() {
                                 required
                                 className={`mt-1 appearance-none rounded relative block w-full px-3 py-2 border ${
                                     validationErrors.email ? 'border-red-300' : 'border-gray-300'
-                                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                                } placeholder-gray-500 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                                 value={formData.email}
                                 onChange={handleChange}
                             />
@@ -201,7 +203,7 @@ export function Signup() {
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="password" className="block text-sm font-medium text-black">
                                 Password
                             </label>
                             <div className="mt-1 relative">
@@ -213,7 +215,7 @@ export function Signup() {
                                     required
                                     className={`appearance-none rounded relative block w-full px-3 py-2 border ${
                                         validationErrors.password ? 'border-red-300' : 'border-gray-300'
-                                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                                    } placeholder-gray-500 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                                     value={formData.password}
                                     onChange={handleChange}
                                 />
@@ -235,7 +237,7 @@ export function Signup() {
                         </div>
 
                         <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-black">
                                 Confirm Password
                             </label>
                             <div className="mt-1 relative">
@@ -247,7 +249,7 @@ export function Signup() {
                                     required
                                     className={`appearance-none rounded relative block w-full px-3 py-2 border ${
                                         validationErrors.confirmPassword ? 'border-red-300' : 'border-gray-300'
-                                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                                    } placeholder-gray-500 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                 />

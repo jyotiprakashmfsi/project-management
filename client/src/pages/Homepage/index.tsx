@@ -34,11 +34,11 @@ export default function HomeComponent() {
         <div className="container mx-auto px-6 pt-32 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <h1 className="text-5xl text-black/80 font-bold leading-tight">
+              <h1 className="text-5xl text-black font-bold leading-tight">
               Connect every team, task, and project together and{" "}
                 <span className="text-indigo-600">Stay on Track</span>
               </h1>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-black">
                 Boost your productivity with our intuitive project management
                 platform.
               </p>

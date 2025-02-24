@@ -1,5 +1,4 @@
 import Sidebar from "../../componnets/sidebar";
-import TasksComponent from "../../componnets/tasks/tasks-component";
 import TaskDetails from "../../componnets/tasks/task-details";
 
 export default function TasksPage() {
